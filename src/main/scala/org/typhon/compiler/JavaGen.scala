@@ -62,7 +62,7 @@ object JavaGen {
     (conClass, conStr)
   }
   
-  def genTm(tm:FTerm):String = tm match {
+  def genTm(tm:FTerm):String = (tm: @unchecked) match {
     case FLit(l) => genLit(l)
     
     case FVar(name, appTys) => name + (
@@ -74,9 +74,9 @@ object JavaGen {
     
     case FLam(Nil, body, _) => genTm(body)
     case FLam(v::vs, body, TyArr(argTy, resTy)) => "new " + genTy(TyArr(argTy, resTy)) + "() { " + 
-		"public " + genTy(resTy) + " " + APPLY + "(final " + genTy(argTy) + " " + v + ") { " +
-		"return " + genTm(FLam(vs, body, resTy)) + "; }" +
-	"}"
+  		"public " + genTy(resTy) + " " + APPLY + "(final " + genTy(argTy) + " " + v + ") { " +
+  		"return " + genTm(FLam(vs, body, resTy)) + "; }" +
+  	"}"
       
     case FApp(func, arg) => genTm(func) + "." + APPLY + "(" + genTm(arg) + ")"
     

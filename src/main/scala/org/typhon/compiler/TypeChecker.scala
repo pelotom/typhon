@@ -129,7 +129,7 @@ def inferTau(tm:Term):Tc[(Tau, FTerm)] = for {
 } yield (ty, fTm)
 
 def unifyFun(ty:Tau):Tc[(Tau, Tau)] = ty match {
-  case TyArr(arg, res) => pure(arg, res)
+  case TyArr(arg, res) => pure((arg, res))
   case _ => for {
     argTy 	<- newMetaVar
     resTy 	<- newMetaVar
@@ -142,7 +142,7 @@ def inferSigma(t:Term):Tc[Sigma] = inferTau(t) map (_._1) flatMap quantify
 /**
  * Unify the metavariables between two types, or die trying.
  */
-def unify(ty1:Tau, ty2:Tau):Tc[Unit] = if (ty1 == ty2) pure() else (ty1, ty2) match {
+def unify(ty1:Tau, ty2:Tau):Tc[Unit] = if (ty1 == ty2) pure(()) else (ty1, ty2) match {
   // if either type is a variable, use unifyVar
   case (TyMetaVar(tv), ty) => unifyVar(TyMetaVar(tv), ty)
   case (ty, TyMetaVar(tv)) => unifyVar(TyMetaVar(tv), ty)
@@ -152,7 +152,7 @@ def unify(ty1:Tau, ty2:Tau):Tc[Unit] = if (ty1 == ty2) pure() else (ty1, ty2) ma
   
   // similarly for arbitrary type constructors...
   case (TyCon(c1, args1), TyCon(c2, args2)) 
-  	if (c1 == c2 && args1.size == args2.size) => sequence((args1, args2).zipped map unify) >> pure()
+  	if (c1 == c2 && args1.size == args2.size) => sequence((args1, args2).zipped map unify) >> pure(())
  
   // all other cases are irreconcilable
   case _ => for {
@@ -276,7 +276,7 @@ def replaceBoundTyVars(sub:Map[TyVarName, Tau], ty:Tau):Tau = ty match {
 }
 
 def replaceMetaVars(subs:List[(TyMetaVar, TyVarName)]):Tc[Unit] = 
-  mapM((p:(TyMetaVar, TyVarName)) => addSub(p._1, TyQuantVar(p._2)), subs) >> pure()
+  mapM((p:(TyMetaVar, TyVarName)) => addSub(p._1, TyQuantVar(p._2)), subs) >> pure(())
 
 val allBinders = {
   val aToZ = ('a' to 'z').map(_.toString).toStream

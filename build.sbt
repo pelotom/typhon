@@ -18,6 +18,6 @@ libraryDependencies += "org.scalaz" %% "scalaz-core" % "7.0.0"
 
 libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.10.1" % "test"
 
-scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xlint")
+scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-Xlint", "-Xfatal-warnings")
 
 scalacOptions ++= Seq("-language:higherKinds", "-language:implicitConversions", "-language:postfixOps")

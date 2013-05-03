@@ -9,7 +9,7 @@ object MatchCompiler {
   type Equation = (List[Pattern], Term)
   
   def checkMatch(us:List[VarName], qs:List[Equation], default:FTerm, expTy:Tau):Tc[FTerm] = us match {
-    case Nil => qs match {
+    case Nil => (qs: @unchecked) match {
       case Nil => pure(default)
       case (Nil,e)::_ => checkTau(e, expTy)
       // TODO: if guard support is added, we would have to check for FAIL and use the rest of the 
@@ -58,7 +58,7 @@ object MatchCompiler {
     case (PatCon(c, cps)::ps, e) => {
       val ncps = cps.length
       check(ncps == n, "Constructor '" + c + "' should have " + n + " arguments, but has been given " + ncps) >> 
-      pure(cps ++ ps, e)
+      pure((cps ++ ps, e))
     }
     case q => sys.error("Couldn't match " + q)
   }
