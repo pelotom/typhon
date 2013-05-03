@@ -6,7 +6,7 @@ version := "0.1-SNAPSHOT"
 
 homepage := Some(url("http://github.com/pelotom/typhon"))
 
-organization := "org.pelotom"
+organization := "org.typhon"
 
 startYear := Some(2013)
 
